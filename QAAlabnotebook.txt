@@ -365,11 +365,14 @@ pulled mouse genomes from ensembl(110):
 https://ftp.ensembl.org/pub/release-110/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz
 https://ftp.ensembl.org/pub/release-110/gtf/mus_musculus/Mus_musculus.GRCm39.110.gtf.gz
 
-ran database.sh:
+Ran database.sh:
+slurm-67534.out 
+-Command being timed: "STAR --runThreadN 8 --runMode genomeGenerate --genomeDir /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/database --genomeFastaFiles /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/Mus_musculus.GRCm39.dna.primary_assembly.fa --sjdbGTFfile /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/Mus_musculus.GRCm39.110.gtf"
+-User time (seconds): 5941.65
+-System time (seconds): 79.88
+-Exit status: 0
 
-
-ran align:
-
+Ran align:
 -NOTE TO SELF: MAKE SURE TO INCLUDE -V IN ALL YOUR SBATCH SCRIPTS
 
 output slurm-67543
@@ -384,21 +387,21 @@ User time (seconds): 526.73
 System time (seconds): 15.00
 Exit status: 0
 
-output sam files:
+Output sam files:
 Aligned_16_3D_Aligned.out.sam
 Aligned_4_2C_Aligned.out.sam
 
-ran PS8pars.py on 4_2C sam file
+Ran PS8pars.py on bioinfo/Bi623/QAA/QAA/Aligned_4_2C_Aligned.out.sam:
 output:
 Mapped reads are: 17048072
 Unmapped reads are: 911942
 
-ran PS8pars.py 16_3D on 16_3D sam file
+Ran PS8pars.py on bioinfo/Bi623/QAA/QAA/Aligned_16_3D_Aligned.out.sam:
 output:
 Mapped reads are: 112120
 Unmapped reads are: 15915608
 
-ran htseq 
+Ran Htseq: 
 
 Analysis of htseq files:
 
