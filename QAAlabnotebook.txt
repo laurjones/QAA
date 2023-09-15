@@ -1,0 +1,440 @@
+Wednesday September 8th
+
+PART 1
+
+-Job ID 55672
+-module load fastqc/0.11.5
+
+-Command being timed: fastqc --outdir=/projects/bgmp/lmjone/bioinfo/Bi623/QAA 4_2C_mbnl_S4_L008_R1_001.fastq.gz 4_2C_mbnl_S4_L008_R2_001.fastq.gz 16_3D_mbnl_S12_L008_R1_001.fastq.gz 16_3D_mbnl_S12_L008_R2_001.fastq.gz 
+-User time (seconds): 184.00
+-System time (seconds): 7.45
+-Exit status: 0
+
+Length of Reads-
+```zcat 4_2C_mbnl_S4_L008_R1_001.fastq.gz | head -n2 | tail -n1 | wc -L``` Output: 101
+```zcat 4_2C_mbnl_S4_L008_R2_001.fastq.gz | head -n2 | tail -n1 | wc -L``` Output: 101
+```zcat 16_3D_mbnl_S12_L008_R1_001.fastq.gz | head -n2 | tail -n1 | wc -L``` Output: 101
+```zcat 16_3D_mbnl_S12_L008_R2_001.fastq.gz | head -n2 | tail -n1 | wc -L``` Output: 101
+
+Ran base_distribution sbatch on all four files:
+
+slurm-57867
+-Command being timed: "./base_distribution.py -f /projects/bgmp/shared/2017_sequencing/demultiplexed/16_3D_mbnl_S12_L008_R1_001.fastq.gz -l 101 -o 16_3D_R1"
+-User time (seconds): 145.51
+-System time (seconds): 0.11
+-Exit status: 0
+
+slurm-57868
+-Command being timed: "./base_distribution.py -f /projects/bgmp/shared/2017_sequencing/demultiplexed/16_3D_mbnl_S12_L008_R2_001.fastq.gz -l 101 -o 16_3D_R2"
+-User time (seconds): 145.26
+-System time (seconds): 0.11
+-Exit status: 0
+
+slurm-57870
+-Command being timed: "./base_distribution.py -f /projects/bgmp/shared/2017_sequencing/demultiplexed/4_2C_mbnl_S4_L008_R1_001.fastq.gz -l 101 -o 4_2C_R1"
+-User time (seconds): 168.79
+-System time (seconds): 0.14
+-Exit status: 0
+
+slurm-57871
+-Command being timed: "./base_distribution.py -f /projects/bgmp/shared/2017_sequencing/demultiplexed/4_2C_mbnl_S4_L008_R2_001.fastq.gz -l 101 -o 4_2C_R2"
+-User time (seconds): 165.28
+-System time (seconds): 0.13
+-Exit status: 0
+
+1. Using fastqc, it seems to me that the plost of the per-base N content is consistent with the quality score plots. The quality score plots are largely high 
+quality which is consistent witht there not being a high per-base N content as seen on the graphs. 
+
+2. Fastqc's quality distribution plots have the same general outcome the plots that I made. The shapes and quality scores seem to be the same. However, the fastqc 
+plots have greater detail with different colors and a trendline making it overall more useful. The runtime difference between the two methods was nuanced. Fastqc
+took 184.00 seconds to run vs. my sbatch scripts took between 147.45 and 170.83 seconds. However, because I had to run the sbatch script 4 times, it took a much longer
+time than fastqc overall.
+
+3. A quality score of Q30 would indicate that all reads a corresponding call accuracy of 99.99% (This is why Q30 is considered a benchmark for quality in next-generation 
+sequencing). When looking at the data, all of our mean Q scores are above 30 meaning the data is highly accurate. Therefore, I believe they are of high enough quality to use 
+for further analysis. One note I had was that the per tile sequence in fastqc was always marked as "low quality", so I will recheck the quality after I trim.
+
+PART 2
+
+-Created QAA conda environment and installed cutadapt and trimmomatic:
+cutadapt version 4.4
+trimmomatic version .39
+
+Ran:
+cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o 4_2C_R1_out.fastq -p 4_2C_R2_out.fastq /projects/bgmp/shared/2017_sequencing/demultiplexed/4_2C_mbnl_S4_L008_R1_001.fastq.gz /projects/bgmp/shared/2017_sequencing/demultiplexed/4_2C_mbnl_S4_L008_R2_001.fastq.gz > cutadapt_4_2C_output.txt
+cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o 16_3D_R1_out.fastq -p 16_3D_R2_out.fastq /projects/bgmp/shared/2017_sequencing/demultiplexed/16_3D_mbnl_S12_L008_R1_001.fastq.gz /projects/bgmp/shared/2017_sequencing/demultiplexed/16_3D_mbnl_S12_L008_R2_001.fastq.gz > cutadapt_16_3D_output.txt
+
+Ran:
+trimmomatic.sh
+
+Ran: 
+-zcat 4_2C_R1_paired.trim.fastq.gz | sed -n '2~4p' | awk '{print length ($0)}' | sort | uniq -c
+Output: 
+231619 100
+8063534 101
+      5 34
+    939 35
+   1043 36
+   1019 37
+   1040 38
+   1103 39
+   1139 40
+   1273 41
+   1264 42
+   1308 43
+   1332 44
+   1265 45
+   1395 46
+   1457 47
+   1571 48
+   1677 49
+   1848 50
+   1910 51
+   1933 52
+   2034 53
+   2082 54
+   2238 55
+   2393 56
+   2469 57
+   2794 58
+   2971 59
+   3144 60
+   3393 61
+   3717 62
+   3835 63
+   4040 64
+   4303 65
+   4684 66
+   5026 67
+   5308 68
+   5706 69
+   6142 70
+   6573 71
+   7299 72
+   7595 73
+   8052 74
+   8458 75
+   8839 76
+   9287 77
+   9684 78
+  10614 79
+  10862 80
+  11127 81
+  11485 82
+  11968 83
+  12787 84
+  13410 85
+  13784 86
+  14169 87
+  15018 88
+  15329 89
+  15988 90
+  17187 91
+  17244 92
+  17457 93
+  17977 94
+  19440 95
+  27379 96
+  53451 97
+ 175375 98
+  26216 99
+
+-zcat 4_2C_R2_paired.trim.fastq.gz | sed -n '2~4p' | awk '{print length ($0)}' | sort | uniq -c
+Output:
+451262 100
+7668477 101
+     67 34
+   7957 35
+   7722 36
+   7121 37
+   6627 38
+   5515 39
+   5432 40
+   4965 41
+   4821 42
+   4549 43
+   4542 44
+   4595 45
+   4532 46
+   4649 47
+   4626 48
+   4634 49
+   4709 50
+   4871 51
+   4906 52
+   5137 53
+   5128 54
+   5231 55
+   5481 56
+   5766 57
+   5964 58
+   6292 59
+   6641 60
+   6739 61
+   7047 62
+   7391 63
+   7533 64
+   7507 65
+   7784 66
+   8342 67
+   8477 68
+   8680 69
+   9092 70
+   9630 71
+   9972 72
+  10242 73
+  10351 74
+  10629 75
+  11089 76
+  11978 77
+  11677 78
+  12019 79
+  12680 80
+  12866 81
+  13102 82
+  13920 83
+  14179 84
+  14938 85
+  15672 86
+  15892 87
+  16282 88
+  17290 89
+  17675 90
+  18285 91
+  18920 92
+  19147 93
+  19585 94
+  20978 95
+  26530 96
+  51592 97
+ 145295 98
+  56781 99
+
+-zcat 16_3D_R1_paired.trim.fastq.gz | sed -n '2~4p' | awk '{print length ($0)}' | sort | uniq -c
+Output:
+200756 100
+6723935 101
+      2 34
+   1071 35
+   1290 36
+   1296 37
+   1424 38
+   1448 39
+   1558 40
+   1714 41
+   1755 42
+   1928 43
+   1960 44
+   2003 45
+   2213 46
+   2346 47
+   2528 48
+   2668 49
+   2857 50
+   3157 51
+   3336 52
+   3516 53
+   3875 54
+   4033 55
+   4388 56
+   4657 57
+   5030 58
+   5452 59
+   5877 60
+   6578 61
+   7072 62
+   7629 63
+   8353 64
+   8844 65
+   9489 66
+  10066 67
+  10759 68
+  11701 69
+  12775 70
+  13513 71
+  14547 72
+  15781 73
+  16662 74
+  17390 75
+  18185 76
+  19114 77
+  19904 78
+  21054 79
+  21964 80
+  22661 81
+  24276 82
+  25318 83
+  26309 84
+  27009 85
+  28143 86
+  28553 87
+  29676 88
+  30252 89
+  30935 90
+  32332 91
+  32590 92
+  33562 93
+  35351 94
+  36472 95
+  42808 96
+  66430 97
+ 168074 98
+  23660 99
+
+-zcat 16_3D_R2_paired.trim.fastq.gz | sed -n '2~4p' | awk '{print length ($0)}' | sort | uniq -c
+output:
+323354 100
+6553806 101
+     61 34
+   6018 35
+   6174 36
+   5689 37
+   5080 38
+   4384 39
+   4302 40
+   3958 41
+   4030 42
+   3710 43
+   3923 44
+   3871 45
+   3896 46
+   4125 47
+   4262 48
+   4406 49
+   4478 50
+   4653 51
+   4949 52
+   5107 53
+   5393 54
+   5739 55
+   5823 56
+   6166 57
+   6570 58
+   7094 59
+   7684 60
+   7859 61
+   8672 62
+   9216 63
+   9705 64
+  10452 65
+  10850 66
+  11476 67
+  11979 68
+  12647 69
+  13453 70
+  14733 71
+  15177 72
+  16112 73
+  17122 74
+  17966 75
+  18607 76
+  19890 77
+  20175 78
+  20951 79
+  21820 80
+  23058 81
+  23485 82
+  25244 83
+  26081 84
+  27178 85
+  28079 86
+  28783 87
+  29479 88
+  30326 89
+  31143 90
+  31948 91
+  32346 92
+  33034 93
+  34419 94
+  36515 95
+  39985 96
+  61050 97
+ 137012 98
+  37132 99
+
+PART 3
+-Installed star, numpy, matplotlib, and htseq into QAA conda environment.
+
+-NOTE TO SELF: CONDA LIST SHOWS THE VERSION OF EVERYTHING INSTALLED IN THE ENVIRONMENT. GOOD 4 PUBLICATIONS.
+STAR version: 2.7.10b
+htseq version 2.0.3
+matplotlib 3.7.2 
+numpy 1.25.2
+
+pulled mouse genomes from ensembl(110):
+https://ftp.ensembl.org/pub/release-110/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz
+https://ftp.ensembl.org/pub/release-110/gtf/mus_musculus/Mus_musculus.GRCm39.110.gtf.gz
+
+ran database.sh:
+
+
+ran align:
+
+-NOTE TO SELF: MAKE SURE TO INCLUDE -V IN ALL YOUR SBATCH SCRIPTS
+
+output slurm-67543
+Command being timed: "STAR --runThreadN 8 --runMode alignReads --outFilterMultimapNmax 3 --outSAMunmapped Within KeepPairs --alignIntronMax 1000000 --alignMatesGapMax 1000000 --readFilesCommand zcat --readFilesIn /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/4_2C_R1_paired.trim.fastq.gz /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/4_2C_R2_paired.trim.fastq.gz --genomeDir /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/database --outFileNamePrefix Aligned_4_2C_"
+User time (seconds): 671.45
+System time (seconds): 16.07 
+Exit status: 0
+
+slurm-70153
+Command being timed: "STAR --runThreadN 8 --runMode alignReads --outFilterMultimapNmax 3 --outSAMunmapped Within KeepPairs --alignIntronMax 1000000 --alignMatesGapMax 1000000 --readFilesCommand zcat --readFilesIn /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/16_3D_R1_paired.trim.fastq.gz /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/16_3D_R2_paired.trim.fastq.gz --genomeDir /projects/bgmp/lmjone/bioinfo/Bi623/QAA/QAA/database --outFileNamePrefix Aligned_16_3D_"
+User time (seconds): 526.73
+System time (seconds): 15.00
+Exit status: 0
+
+output sam files:
+Aligned_16_3D_Aligned.out.sam
+Aligned_4_2C_Aligned.out.sam
+
+ran PS8pars.py on 4_2C sam file
+output:
+Mapped reads are: 17048072
+Unmapped reads are: 911942
+
+ran PS8pars.py 16_3D on 16_3D sam file
+output:
+Mapped reads are: 112120
+Unmapped reads are: 15915608
+
+ran htseq 
+
+Analysis of htseq files:
+
+Percentage of reads that mapped to a gene-
+grep -v "__" Aligned_reverse_4_2C_out.tsv | awk '$2>0 {sum+=$2} END {print sum}'
+7187229
+
+grep -v "__" Aligned_reverse_16_3D_out.tsv | awk '$2>0 {sum+=$2} END {print sum}'
+6734990
+
+grep -v "__" Aligned_yes_4_2C_out.tsv | awk '$2>0 {sum+=$2} END {print sum}'
+351743
+
+grep -v "__" Aligned_yes_16_3D_out.tsv | awk '$2>0 {sum+=$2} END {print sum}'
+316356
+
+Total number of reads-
+awk '{sum+=$2} END {print sum}' Aligned_reverse_4_2C_out.tsv 
+8980007
+
+awk '{sum+=$2} END {print sum}' Aligned_reverse_16_3D_out.tsv 
+8013864
+
+awk '{sum+=$2} END {print sum}' Aligned_yes_4_2C_out.tsv 
+8980007
+
+awk '{sum+=$2} END {print sum}' Aligned_yes_16_3D_out.tsv 
+8013864
+
+Percentage of reads mapped to gene-
+Aligned_reverse_4_2C_out = 80.04%
+
+Aligned_reverse_16_3D_out = 84.04%
+
+Aligned_yes_4_2C_out = 3.92%
+
+Aligned_yes_16_3D_out = 3.95%%
+
+11. Due to the percentage of genes matching to reverse strands being so high it is likely that both samples are double-straded and reversed.
