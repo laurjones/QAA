@@ -63,11 +63,35 @@ trimmomatic version .39
 Ran:
 cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o 4_2C_R1_out.fastq -p 4_2C_R2_out.fastq /projects/bgmp/shared/2017_sequencing/demultiplexed/4_2C_mbnl_S4_L008_R1_001.fastq.gz /projects/bgmp/shared/2017_sequencing/demultiplexed/4_2C_mbnl_S4_L008_R2_001.fastq.gz > cutadapt_4_2C_output.txt
 cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o 16_3D_R1_out.fastq -p 16_3D_R2_out.fastq /projects/bgmp/shared/2017_sequencing/demultiplexed/16_3D_mbnl_S12_L008_R1_001.fastq.gz /projects/bgmp/shared/2017_sequencing/demultiplexed/16_3D_mbnl_S12_L008_R2_001.fastq.gz > cutadapt_16_3D_output.txt
+4_2C_output
+Total read pairs processed:          9,265,284
+  Read 1 with adapter:                 570,274 (6.2%)
+  Read 2 with adapter:                 510,886 (5.5%)
+Pairs written (passing filters):     9,265,284 (100.0%)
+
+Total basepairs processed: 1,871,587,368 bp
+  Read 1:   935,793,684 bp
+  Read 2:   935,793,684 bp
+Total written (filtered):  1,856,362,224 bp (99.2%)
+  Read 1:   927,955,998 bp
+  Read 2:   928,406,226 bp
+
+16_3D output
+Total read pairs processed:          8,235,197
+  Read 1 with adapter:               1,002,983 (12.2%)
+  Read 2 with adapter:                 927,085 (11.3%)
+Pairs written (passing filters):     8,235,197 (100.0%)
+
+Total basepairs processed: 1,663,509,794 bp
+  Read 1:   831,754,897 bp
+  Read 2:   831,754,897 bp
+Total written (filtered):  1,628,757,821 bp (97.9%)
+  Read 1:   813,886,317 bp
+  Read 2:   814,871,504 bp
 
 Ran:
 trimmomatic.sh
 
-Ran: 
 -zcat 4_2C_R1_paired.trim.fastq.gz | sed -n '2~4p' | awk '{print length ($0)}' | sort | uniq -c
 Output: 
 231619 100
@@ -398,8 +422,8 @@ Unmapped reads are: 911942
 
 Ran PS8pars.py on bioinfo/Bi623/QAA/QAA/Aligned_16_3D_Aligned.out.sam:
 output:
-Mapped reads are: 112120
-Unmapped reads are: 15915608
+Mapped reads are: 15334305
+Unmapped reads are: 693423
 
 Ran Htseq: 
 
